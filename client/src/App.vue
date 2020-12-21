@@ -10,11 +10,20 @@
 <script>
 import Nav from './components/Nav';
 import Content from './components/Content';
+import { mapActions } from 'vuex';
+
 
 export default {
     components: {
         appNav: Nav,
         appContent: Content
+    },
+    methods: {
+        ...mapActions(['fetchTasks', 'fetchProjects'])
+    },
+    async created() {
+        // await this.fetchTasks();
+        await this.fetchProjects();
     }
 }
 </script>

@@ -31,7 +31,7 @@ const getters = {
                         taskName: task.name,
                         projectID: project._id,
                         projectName: project.name,
-                        timerID: time._id,
+                        timeID: time._id,
                         start: moment(time.start),
                         end: moment(time.end),
                         duration: moment.duration(moment(time.end).diff(time.start))

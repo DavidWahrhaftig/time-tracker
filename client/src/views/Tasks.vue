@@ -5,11 +5,12 @@
         <div class="tasks">
             <div class="tasks__date">Today</div>
             <!-- <p>tasks content</p> -->
+            <!-- <app-task/>    
             <app-task/>    
             <app-task/>    
             <app-task/>    
-            <app-task/>    
-            <app-task/>    
+            <app-task/>     -->
+            <app-task v-for="task in tasks" :key="task.timeID" :task="task"/>
         </div>
     </div>
 </template>
@@ -18,7 +19,7 @@
 // @ is an alias to /src
 import Task from '@/components/Task.vue';
 import NewTask from '@/components/NewTask.vue';
-import { mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'Tasks',
@@ -26,13 +27,9 @@ export default {
         appTask: Task,
         appNewTask: NewTask
     },
-    methods: {
-        ...mapActions(['fetchTasks', 'fetchProjects'])
+    computed: {
+        ...mapGetters(['tasks'])
     },
-    async created() {
-        // await this.fetchTasks();
-        await this.fetchProjects();
-    }
 }
 </script>
 

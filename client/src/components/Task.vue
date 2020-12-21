@@ -1,8 +1,8 @@
 <template>
     <div class="task">
         <div class="task__details">
-            <input class="task__details__name" type="text" v-model="name"/>
-            <li class="task__details__project-name">{{project.name}}</li>
+            <input class="task__details__name" type="text" v-model="task.taskName"/>
+            <li class="task__details__project-name">{{task.projectName}}</li>
         </div>
         <div class="task__time">
             <input class="task__time-start" type="text" v-model="start"/>
@@ -20,6 +20,7 @@
 
 <script>
 export default {
+    props: ['task'],
     data() {
         return {
             name: "Task 1",

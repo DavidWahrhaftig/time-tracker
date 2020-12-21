@@ -40,6 +40,7 @@ router.get('/', async (req, res) => {
 router.get('/:projetID', async (req, res) => {
     try {
         const project = await Project.findById(req.params.projectID).populate('tasks');
+        
         res.status(200).json({
             success: true,
             project,
@@ -63,7 +64,7 @@ router.post('/', async (req, res) => {
     try {
         console.log("Create project");
 
-        const newProject = await Project.create({name: req.body.name, createdAt: new Date()});
+        const newProject = await Project.create({name: req.body.name});
 
         res.status(201).json({
             success: true,

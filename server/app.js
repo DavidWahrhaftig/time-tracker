@@ -4,6 +4,7 @@ const   express     = require('express'),
         mongoURI    = require('./keys.js').mongoURI;
         app         = express();
 
+const Project = require('./model/Project');
 
 // Form Data Middleware
 app.use(express.urlencoded({
@@ -19,8 +20,13 @@ mongoose.connect(mongoURI,
         useFindAndModify: false,
         useNewUrlParser: true, 
         useUnifiedTopology: true 
-    }).then(() => {
-        console.log(`Database connected successfully ${mongoURI}`);       
+    }).then(async () => {
+        console.log(`Database connected successfully ${mongoURI}`);
+        const exist = await Project.findOne({name: 'No Project'});
+        if (!exist) {   
+            await Project.create({name: 'No Project'});
+            console.log('[app.js] created "No Project" project')
+        }
     }).catch((err) => {
         console.log(`Unable to connect with the database ${err}`)
     });
@@ -29,9 +35,10 @@ mongoose.connect(mongoURI,
 const tasks = require('./routes/api/tasks');
 app.use('/api/tasks', tasks);
 // Bring in the Times route
-const times = require('./routes/api/times');
-app.use('/api/times', times);
-// Bring in the Times route
+// const times = require('./routes/api/times');
+// app.use('/api/times', times);
+
+// Bring in the Projects route
 const projects = require('./routes/api/projects');
 app.use('/api/projects', projects);
 
