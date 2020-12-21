@@ -36,6 +36,7 @@ router.post('/', async (req, res) => {
         console.log("Create time");
         
         // create new time
+        // const newTime = await Time.create({start: req.body.start, taskID: req.body.taskID});
         const newTime = await Time.create({start: new Date(), taskID: req.body.taskID});
        
         // add new time to the task times
@@ -71,9 +72,10 @@ router.put('/:timeID', async (req, res) => {
         // update time document 
         // const time = await Time.findByIdAndUpdate(req.params.timeID, {start: req.body.start, end: req.body.end});
         // const time = await Time.findByIdAndUpdate(req.params.timeID, {...req.body});
+        // const time = await Time.findByIdAndUpdate(req.params.timeID, {end: req.body.end});
         const time = await Time.findByIdAndUpdate(req.params.timeID, {end: new Date()});
         // res.redirect('/api/tasks/'+ req.body.taskID);
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             time,
             msg: 'Updated Time'

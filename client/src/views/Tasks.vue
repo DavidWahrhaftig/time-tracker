@@ -18,12 +18,20 @@
 // @ is an alias to /src
 import Task from '@/components/Task.vue';
 import NewTask from '@/components/NewTask.vue';
+import { mapActions } from 'vuex';
 
 export default {
     name: 'Tasks',
     components: {
         appTask: Task,
         appNewTask: NewTask
+    },
+    methods: {
+        ...mapActions(['fetchTasks', 'fetchProjects'])
+    },
+    async created() {
+        // await this.fetchTasks();
+        await this.fetchProjects();
     }
 }
 </script>

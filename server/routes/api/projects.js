@@ -11,7 +11,13 @@ const Project = require('../../model/Project');
 router.get('/', async (req, res) => {
     try {
         console.log("Get all tasks");
-        const projects = await Project.find({}).populate('tasks');
+        const projects = await Project.find({}).populate({
+            path : 'tasks',
+            populate : {
+              path : 'times'
+            }
+        });
+
         res.status(200).json({
             success: true,
             projects,
