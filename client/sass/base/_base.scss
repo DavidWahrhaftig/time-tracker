@@ -1,0 +1,25 @@
+*,
+*::after,
+*::before { /*universal selector*/
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit; /* elements will inherit whatever the parent box-sizing is, as specificed in the body*/
+}
+
+html {
+    font-size: 65%;
+}
+
+body {
+    padding: 0;
+    /* sets its so paddings and borders do not add to the width/height of the total height*/
+    box-sizing: border-box; 
+    // background-color: rgb(240, 239, 239);
+    background-color: #e0dede;
+    // background-color: $color-grey-romanian-3;
+    // background: -webkit-radial-gradient(bottom left,$color-primary-light, $color-primary);
+                // background: radial-gradient(at bottom left, #225fbb, $color-primary);
+    // margin-bottom:  $footer-height;
+    min-height: 100vh;
+    margin: 0;
+}

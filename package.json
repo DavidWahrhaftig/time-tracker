@@ -4,7 +4,8 @@
   "description": "Recrod and edit Tasks.",
   "main": "server/app.js",
   "scripts": {
-    "server": "nodemon server/app.js"
+    "server": "nodemon server/app.js",
+    "client": "npm run serve --prefix client"
   },
   "author": "David Wahrhaftig",
   "license": "ISC",
