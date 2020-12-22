@@ -1,28 +1,97 @@
 <template>
     <div class="new-task">
-        <input class="new-task__input" type="text" v-model="name"/>
+        <input class="new-task__input" :disabled="this.started" type="text" v-model="selectedTask.name" placeholder="Task Name"/>
         <button class="new-task__add-project">
             <i class="fas fa-plus-circle"></i>
             <span>Project</span>
         </button>
-        <div class="new-task__duration">{{duration}}</div>
-        <button class="new-task__button new-task__button--start" v-if="!started">
+        <div class="new-task__duration">{{formattedDuration}}</div>
+        <!-- <div class="new-task__date">{{date}}</div> -->
+
+        <button @click="startTime()" class="new-task__button new-task__button--start" v-if="!started">
             Start
         </button>
-        <button class="new-task__button new-task__button--stop" v-else>
+        <button @click="stopTime()" class="new-task__button new-task__button--stop" v-else>
             Stop
         </button>
     </div>
 </template>
 
 <script>
+import moment from 'moment';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+
 export default {
+    // props: ['task'],
     data() {
         return {
-            name: "New Task",
-            duration: "00:00:00",
-            started: true,
+            // name: "",
+            started: false,
+            duration: 0,
+            start: null,
+            end: null,
+            // projectID: null,
+            intervalID: null,
+            taskID: null
         }
+    },
+    computed: {
+        ...mapGetters(['selectedTask']),
+        formattedDuration() {
+            // format duration from seconds to HH:MM:SS
+            return new Date(this.duration * 1000).toISOString().substr(11, 8);
+        }
+    },
+    
+    // watch: {
+    //     currrentTask(newVal, oldVal){
+    //         if (newVal != oldVal) {
+    //             // trigger event
+    //         }
+    //     }
+    // },
+    methods: {
+        ...mapMutations(['resetSelectedTask']),
+        async startTime() {
+            if (this.selectedTask.name === '') return;
+            this.started = true;
+            this.selectedTask.start = moment();
+            this.intervalID = setInterval(() => {
+                this.duration += 1;
+            }, 1000);
+            // call api
+            // const newTask = { 
+            //     name: this.selectedTask.name,
+            //     projectID: this.selectedTask.projectID,
+            //     start: this.selectedTask.start.toDate()
+            // }
+            this.taskID = await this.createTask(this.selectedTask);
+
+        }, 
+        async stopTime() {
+            this.started = false;
+            // create end date
+            // this.end = this.selectedTask.start.clone().add(this.duration, 'seconds');
+            clearInterval(this.intervalID);
+            this.intervalID = null;
+            // make api call to update the task with the end date
+
+            await this.updateTask({
+                taskID: this.taskID,
+                task: {end: this.selectedTask.start.clone().add(this.duration, 'seconds')}
+            });
+
+            this.duration= 0;
+            this.taskID=null;
+            this.intervalID= null;
+            this.resetSelectedTask();
+
+            // this.name= "";
+            // this.start= null;
+            // this.end= null;
+            // this.projectID= null;
+        },
+        ...mapActions(['createTask', 'updateTask'])
     }
 }
 </script>
@@ -42,7 +111,7 @@ export default {
         & input {
 
             height: 100%;
-            width: 60%;
+            width: 40%;
             font-size:inherit;
             padding: 0.5rem;
             outline: none;

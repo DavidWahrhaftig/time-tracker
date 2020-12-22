@@ -3,14 +3,14 @@
 
         <app-new-task/>
         <div class="tasks">
-            <div class="tasks__date">Today</div>
+            <div class="tasks__date">All Tasks</div>
             <!-- <p>tasks content</p> -->
             <!-- <app-task/>    
             <app-task/>    
             <app-task/>    
             <app-task/>    
             <app-task/>     -->
-            <app-task v-for="task in tasks" :key="task.timeID" :task="task"/>
+            <app-task v-for="task in tasks" :key="task.taskID" :task="task"/>
         </div>
     </div>
 </template>

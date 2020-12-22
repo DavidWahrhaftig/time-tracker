@@ -57,7 +57,8 @@ const actions = {
             console.log(err);
             // commit('setIsLoading', false);
         } 
-    }
+    },
+    
 }
 
 export default {

@@ -19,7 +19,7 @@ export default {
         appContent: Content
     },
     methods: {
-        ...mapActions(['fetchTasks', 'fetchProjects'])
+        ...mapActions(['fetchProjects'])
     },
     async created() {
         // await this.fetchTasks();
