@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <app-new-task/>
+        <app-new-task />
         <div class="tasks">
             <div class="tasks__date">All Tasks</div>
             <!-- <p>tasks content</p> -->
@@ -28,7 +28,7 @@ export default {
         appNewTask: NewTask
     },
     computed: {
-        ...mapGetters(['tasks'])
+        ...mapGetters(['tasks']),
     },
 }
 </script>

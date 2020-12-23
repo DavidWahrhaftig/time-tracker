@@ -1,10 +1,25 @@
 <template>
     <div class="new-task">
-        <input class="new-task__input" :disabled="this.started" type="text" v-model="selectedTask.name" placeholder="Task Name"/>
-        <button class="new-task__add-project">
-            <i class="fas fa-plus-circle"></i>
-            <span>Project</span>
-        </button>
+        <input 
+            class="new-task__input" 
+            :disabled="this.started" 
+            type="text" 
+            v-model="newTask.name" 
+            placeholder="Task Name"/>
+        <app-project-menu 
+            @selectProject="setProjectForNewTask" 
+            @setNewProjectName="setNewProjectName"
+            :newProjectName="newProjectName"/>
+        <!-- <button class="new-task__add-project">
+            <div v-if="newTask.projectName == 'No Project'">
+                <i class="fas fa-plus-circle"></i>
+                <span>Project</span>
+            </div>
+            <div v-else>
+                {{newTask.projectName}}
+            </div>
+            
+        </button> -->
         <div class="new-task__duration">{{formattedDuration}}</div>
         <!-- <div class="new-task__date">{{date}}</div> -->
 
@@ -18,11 +33,16 @@
 </template>
 
 <script>
+import ProjectMenu from './ProjectsMenu.vue';
 import moment from 'moment';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
+
 export default {
     // props: ['task'],
+    components : {
+        AppProjectMenu: ProjectMenu
+    },
     data() {
         return {
             // name: "",
@@ -32,15 +52,17 @@ export default {
             end: null,
             // projectID: null,
             intervalID: null,
-            taskID: null
+            taskID: null,
+            newProjectName: ""
         }
     },
     computed: {
-        ...mapGetters(['selectedTask']),
+        ...mapGetters(['newTask']),
         formattedDuration() {
             // format duration from seconds to HH:MM:SS
             return new Date(this.duration * 1000).toISOString().substr(11, 8);
-        }
+        },
+
     },
     
     // watch: {
@@ -51,45 +73,51 @@ export default {
     //     }
     // },
     methods: {
-        ...mapMutations(['resetSelectedTask']),
+        ...mapMutations(['resetNewTask', 'setNewTask']),
         async startTime() {
-            if (this.selectedTask.name === '') return;
+            if (this.newTask.name === '') return;
             this.started = true;
-            this.selectedTask.start = moment();
+            this.newTask.start = moment();
             this.intervalID = setInterval(() => {
                 this.duration += 1;
             }, 1000);
             // call api
             // const newTask = { 
-            //     name: this.selectedTask.name,
-            //     projectID: this.selectedTask.projectID,
-            //     start: this.selectedTask.start.toDate()
+            //     name: this.newTask.name,
+            //     projectID: this.newTask.projectID,
+            //     start: this.newTask.start.toDate()
             // }
-            this.taskID = await this.createTask(this.selectedTask);
+            this.taskID = await this.createTask(this.newTask);
 
         }, 
         async stopTime() {
             this.started = false;
             // create end date
-            // this.end = this.selectedTask.start.clone().add(this.duration, 'seconds');
+            // this.end = this.newTask.start.clone().add(this.duration, 'seconds');
             clearInterval(this.intervalID);
             this.intervalID = null;
             // make api call to update the task with the end date
 
             await this.updateTask({
                 taskID: this.taskID,
-                task: {end: this.selectedTask.start.clone().add(this.duration, 'seconds')}
+                task: {end: this.newTask.start.clone().add(this.duration, 'seconds')}
             });
 
             this.duration= 0;
             this.taskID=null;
             this.intervalID= null;
-            this.resetSelectedTask();
+            this.resetNewTask();
 
             // this.name= "";
             // this.start= null;
             // this.end= null;
             // this.projectID= null;
+        },
+        setProjectForNewTask(projectSelected) {
+            this.setNewTask(projectSelected);
+        },
+        setNewProjectName(newName) {
+            this.newProjectName = newName;
         },
         ...mapActions(['createTask', 'updateTask'])
     }
@@ -129,10 +157,13 @@ export default {
             border: none;
             background-color: transparent;
             width: 6rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            &:hover > span{
+            & > div {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+            }
+            
+            &:hover span{
                 text-decoration: underline;
             }
             &:focus {

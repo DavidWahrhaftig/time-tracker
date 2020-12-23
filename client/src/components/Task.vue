@@ -2,7 +2,9 @@
     <div class="task">
         <div class="task__details">
             <input class="task__details__name" type="text" @change="updateName" :value="task.taskName"/>
-            <li class="task__details__project-name"><span>{{task.projectName}}</span></li>
+            <li class="task__details__project-name">
+                <span>{{task.projectName}}</span>
+            </li>
         </div>
         <div class="task__time">
             <input class="task__time-start" type="text" @change="updateStart" :value="startTimeFormatted"/>
@@ -13,7 +15,7 @@
         </div>
         <div class="task__actions">
             <!-- <i class="task__actions-save fas fa-save"></i> -->
-            <i class="task__actions-clone fas fa-clone" @click="setSelectedTask({name: task.taskName, projectID: task.projectID})"></i>
+            <i class="task__actions-clone fas fa-clone" @click="setNewTask({name: task.taskName, projectID: task.projectID, projectName: task.projectName})"></i>
             <i class="task__actions-delete fas fa-trash-alt" @click="deleteTask(task.taskID)"></i>
         </div>
     </div>
@@ -49,10 +51,10 @@ export default {
             const durationString = `${('0' + hours % 60).slice(-2)}:${('0' + mins % 60).slice(-2)}:${('0' + secs % 60).slice(-2)}`
             return durationString;
             // return new Date(this.task.duration * 1000).toISOString().substr(11, 8)
-        }
+        },
     },
     methods: {
-        ...mapMutations(['setSelectedTask']),
+        ...mapMutations(['setNewTask']),
         ...mapActions(['deleteTask', 'updateTask']),
         async updateDuration($event) {
             // console.log($event.target.value);
@@ -84,7 +86,7 @@ export default {
                 // everything with PM can just be mod'd and added with 12 - the max will be 23
                 timeArr[0] = (timeArr[0] % 12) + 12
             }  
-            const fullDayTime = timeArr.join(":").replace(' ', '')
+            const fullDayTime = timeArr.join(":").replace(' ', '') + ':' + this.task.start.format('ss');
             console.log(fullDayTime);
             
             const newStart = moment(this.dateFormatted + ' ' + fullDayTime);
@@ -143,13 +145,20 @@ export default {
         },
         async updateDate($event) {
             console.log($event.target.value);
-            
-            // await this.updateTask({
-            //     taskID: this.task.taskID,
-            //     task: {
-            //         name: $event.target.value
-            //     }
-            // });
+            // create new start 
+            const dateString = $event.target.value;
+            const newStart = moment(dateString + ' ' + this.task.start.format('HH:mm:ss'));
+            console.log('new start', newStart);
+            // create new end
+            const newEnd = newStart.clone().add(this.task.duration, 'seconds');
+            console.log('new end', newEnd.format('YYYY-MM-DD HH:mm:ss'));
+            await this.updateTask({
+                taskID: this.task.taskID,
+                task: {
+                    start: newStart,
+                    end: newEnd
+                }
+            });
         }
     },
     // created() {

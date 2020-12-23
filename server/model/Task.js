@@ -17,11 +17,11 @@ const TaskSchema = new mongoose.Schema({
     //     }
     // ],
     start: {
-        type: Date,
+        type: String, // YY-MM-DD HH:mm:ss
         required: true
     },
     end: {
-        type: Date,
+        type: String, // YY-MM-DD HH:mm:ss
         default: null
     }
 });

@@ -11,11 +11,12 @@ export default new Vuex.Store({
     state: {
         projects: [],
         tasks: [],
-        selectedTask: {
+        newTask: {
             name: "",
             start: null,
             end: null,
-            projectID: null
+            projectID: null,
+            projectName: "No Project"
         }
     },
     getters: {
@@ -55,8 +56,8 @@ export default new Vuex.Store({
             const merged = [].concat.apply([], [].concat.apply([], tasks));    
             return merged;
         },
-        selectedTask(state) {
-            return state.selectedTask
+        newTask(state) {
+            return state.newTask;
         }
     },
     mutations: {
@@ -86,15 +87,16 @@ export default new Vuex.Store({
             })
             state.projects = updatedProjects;
         },
-        setSelectedTask(state, task) {
-            state.selectedTask = {...task, start: null, end: null};
+        setNewTask(state, task) {
+            state.newTask = {...state.newTask, ...task};
         },
-        resetSelectedTask(state) {
-            state.selectedTask= {
+        resetNewTask(state) {
+            state.newTask= {
                 name: "",
                 projectID: null,
                 start: null,
-                end: null
+                end: null,
+                projectName: "No Project"
             }
         }
     },
@@ -127,7 +129,7 @@ export default new Vuex.Store({
                 if (res.data.success) {
                     return res.data.task._id;
                 }
-                commit('setCurrentTask', res.data.task);
+                commit('setNewTask', res.data.task);
             } catch(err) {
                 console.log(err);
                 // commit('setIsLoading', false);

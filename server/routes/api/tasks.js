@@ -84,12 +84,19 @@ router.post('/', async (req, res) => {
     try {
         console.log("Create task");
         // create new time
-        let project = null;
-        if (req.body.projectID) {
-            project = await Project.findById(req.body.projectID).populate('tasks');
-        } else {
-            project = await Project.findOne({name: 'No Project'}).populate('tasks');
+        // find project with the provided project Name
+        let project = await Project.findOne({name: req.body.projectName}).populate('tasks');
+
+        // create new project if projec not existing yet
+        if (!project) {
+            project = await Project.create({name: req.body.projectName});
         }
+
+        // if (req.body.projectID) {
+        //     project = await Project.findOne({name: req.body.projectName}).populate('tasks');
+        // } else {
+        //     project = await Project.findOne({name: 'No Project'}).populate('tasks');
+        // }
 
         const newTask = await Task.create({...req.body, projectID: project._id});
         project.tasks.push(newTask);
