@@ -182,7 +182,7 @@ export default {
             }
 
             &--start {
-                background-color: #00b6e3
+                background-color: $color-highlight;//#00b6e3
             }
             &--stop {
                 background-color: #e32d00

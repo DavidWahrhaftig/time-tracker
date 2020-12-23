@@ -50,7 +50,8 @@ export default new Vuex.Store({
                         end,
                         duration
                     }
-                });
+                }).reverse();
+                // });
             });
     
             const merged = [].concat.apply([], [].concat.apply([], tasks));    

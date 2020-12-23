@@ -172,7 +172,7 @@ export default {
         display: flex;
         justify-content: space-between;
         width: 100%;
-        height: 5rem;
+        height: 6rem;
         padding: 1rem;
         background-color: $color-primary-light;
         font-size: 1.6rem;
@@ -203,10 +203,13 @@ export default {
             display: flex;
             &__name {
                 margin-right: 1rem;
+                width: 10rem !important;
             }
 
             &__project-name {
                 // margin-right: 1rem;
+                margin: auto 0;
+                width: 13rem;
                 & span {
                     position: relative;
                     left: -10px;

@@ -62,6 +62,8 @@ export default {
             cursor: pointer;
             border: none;
             background-color: transparent;
+            font-size: 1.5rem;
+            color: #03a9f4;
             // width: 10rem;
             text-align: left;
             &:focus {
@@ -70,6 +72,7 @@ export default {
             
             .project-name {
                 padding-left:  0.5rem ;
+                
             }
         }   
 
@@ -98,7 +101,9 @@ export default {
                 }
 
                 &:hover {
-                    background-color: pink;
+                    // background-color: pink;
+                    background-color: $color-highlight;
+                    color:white;
                 }
              }
         }
