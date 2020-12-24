@@ -1,5 +1,5 @@
 <template>
-    <div class="new-task">
+    <div class="new-task" :class="{'new-task--running': this.started}">
         <input 
             class="new-task__input" 
             :disabled="this.started" 
@@ -64,14 +64,6 @@ export default {
         },
 
     },
-    
-    // watch: {
-    //     currrentTask(newVal, oldVal){
-    //         if (newVal != oldVal) {
-    //             // trigger event
-    //         }
-    //     }
-    // },
     methods: {
         ...mapMutations(['resetNewTask', 'setNewTask']),
         async startTime() {
@@ -81,13 +73,13 @@ export default {
             this.intervalID = setInterval(() => {
                 this.duration += 1;
             }, 1000);
-            // call api
-            // const newTask = { 
-            //     name: this.newTask.name,
-            //     projectID: this.newTask.projectID,
-            //     start: this.newTask.start.toDate()
-            // }
-            this.taskID = await this.createTask(this.newTask);
+            // // call api
+            // // const newTask = { 
+            // //     name: this.newTask.name,
+            // //     projectID: this.newTask.projectID,
+            // //     start: this.newTask.start.toDate()
+            // // }
+            // this.taskID = await this.createTask(this.newTask);
 
         }, 
         async stopTime() {
@@ -97,21 +89,13 @@ export default {
             clearInterval(this.intervalID);
             this.intervalID = null;
             // make api call to update the task with the end date
-
-            await this.updateTask({
-                taskID: this.taskID,
-                task: {end: this.newTask.start.clone().add(this.duration, 'seconds')}
-            });
+            this.newTask.end = this.newTask.start.clone().add(this.duration, 'seconds')
+            await this.createTask(this.newTask);
 
             this.duration= 0;
             this.taskID=null;
             this.intervalID= null;
             this.resetNewTask();
-
-            // this.name= "";
-            // this.start= null;
-            // this.end= null;
-            // this.projectID= null;
         },
         setProjectForNewTask(projectSelected) {
             this.setNewTask(projectSelected);
@@ -135,7 +119,13 @@ export default {
         font-size: 1.6rem;
         z-index: 99;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  
+        transition: all 0.3s;
+
+        &--running {
+            background-color: $color-active;
             
+        }
+
         & input {
 
             height: 100%;

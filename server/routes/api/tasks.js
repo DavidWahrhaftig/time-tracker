@@ -159,7 +159,7 @@ router.delete('/:taskID', async(req, res) => {
 
         res.status(200).json({
             success: true,
-            msg: `Deleted Task ${deletedTask.name} in ${project.name}`
+            msg: `Deleted Task`
         });
     } catch (err) {
         console.log(err.message);

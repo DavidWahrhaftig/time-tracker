@@ -4,6 +4,7 @@ import moment from 'moment';
 import axios from '../axios';
 // import Tasks from './tasks';
 // import Projects from './projects';
+import UI from './UI';
 
 Vue.use(Vuex)
 
@@ -114,58 +115,38 @@ export default new Vuex.Store({
         },
         async createProject({dispatch}, project) {
             try {
-                const res = await axios.post('/projects', project);
-                if (res.data.success) {
-                    // reload all projects
-                    await dispatch('fetchProjects');
-                }
+                await axios.post('/projects', project);
+                await dispatch('fetchProjects');
             } catch(err) {
                 console.log(err);
             } 
         },
-        async createTask({commit}, task) {
+        async createTask({dispatch}, task) {
             try {
-                // commit('setIsLoading', true);
-                const res = await axios.post('/tasks', task);
-                if (res.data.success) {
-                    return res.data.task._id;
-                }
-                commit('setNewTask', res.data.task);
+                await axios.post('/tasks', task);
+                await dispatch('fetchProjects');
             } catch(err) {
                 console.log(err);
-                // commit('setIsLoading', false);
-                return null;
             } 
         },
         async updateTask({dispatch}, payload) {
             try {
-                // commit('setIsLoading', true);
-                const res = await axios.put(`/tasks/${payload.taskID}`, payload.task);
-                if (res.data.success) {
-                    // commit('setTasks', res.data.tasks);
-                    await dispatch('fetchProjects');
-                }
-                // commit('setIsLoading', false);
+                await axios.put(`/tasks/${payload.taskID}`, payload.task);
+                await dispatch('fetchProjects');
             } catch(err) {
                 console.log(err);
-                // commit('setIsLoading', false);
             } 
         },
         async deleteTask({dispatch}, taskID) {
             try {
-                // commit('setIsLoading', true);
-                const res = await axios.delete(`/tasks/${taskID}`);
-                if (res.data.success) {
-                    // commit('setTasks', res.data.tasks);
-                    await dispatch('fetchProjects');
-                }
-                // commit('setIsLoading', false);
+                await axios.delete(`/tasks/${taskID}`);
+                await dispatch('fetchProjects');
             } catch(err) {
                 console.log(err);
-                // commit('setIsLoading', false);
             } 
         }
     },
     modules: {
+        UI
     }
 })

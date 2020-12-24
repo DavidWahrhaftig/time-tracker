@@ -63,7 +63,7 @@ export default {
             border: none;
             background-color: transparent;
             font-size: 1.5rem;
-            color: #03a9f4;
+            color: $color-highlight;
             // width: 10rem;
             text-align: left;
             &:focus {

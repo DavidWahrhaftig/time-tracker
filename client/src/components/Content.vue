@@ -4,13 +4,17 @@
             {{$route.name}}
         </h1> -->
         <router-view/>
+        <app-messages/>
     </div>
 
 </template>
 
 <script>
+import Messages from '../components/UI/Messages.vue';
 export default {
-
+    components: {
+        appMessages: Messages
+    }
 }
 </script>
 

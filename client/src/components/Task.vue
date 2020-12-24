@@ -203,7 +203,7 @@ export default {
             display: flex;
             &__name {
                 margin-right: 1rem;
-                width: 10rem !important;
+                width: 12rem !important;
             }
 
             &__project-name {

@@ -1,7 +1,7 @@
 <template>
     <nav class="nav">
         <h1 class="nav__logo">Time Tracker</h1>
-        <router-link class="nav__link" :class="{'nav__link-current': $route.path === '/'}" to="/">Tasks</router-link>
+        <router-link class="nav__link" :class="{'nav__link-current': $route.path === '/'}" to="/">Tasks Manager</router-link>
         <router-link class="nav__link" :class="{'nav__link-current': $route.path === '/dashboard'}" to="/dashboard">Dashboard</router-link>
     </nav>
 </template>

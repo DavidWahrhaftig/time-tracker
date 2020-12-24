@@ -60,14 +60,13 @@ export default {
             // }
             return {
                 options: {
-                    hoverBorderWidth: 10,
                     title: {
                         display: true,
-                        text: 'Projects',
-                        // padding: 10,
-                        position: 'bottom'
+                        fontSize: 16,
+                        padding: 15,
+                        text: 'Custom Chart Title'
                     },
-                    
+                    hoverBorderWidth: 10,
                 },
                 data: {
                     // hoverBackgroundColor: "blue",
@@ -91,8 +90,10 @@ export default {
     .charts-grid {
         margin-top: 4rem;
         display: grid;
-        grid-template-columns: 1fr 3fr;
-        grid-gap: 1rem; 
+        grid-template-columns: 50rem 50rem;
+        // grid-template-columns: 40rem 40rem;
+        grid-template-rows: 50rem;
+        grid-column-gap: 10rem; 
         grid-template-areas: 
             "pie bar";
         
@@ -108,7 +109,7 @@ export default {
             // position: relative;
             grid-area: pie;
             // margin: auto;
-            height: 60vh;
+            // width: 30rem;
             // width: 20rem;
         }
         &__bar-chart-container {
