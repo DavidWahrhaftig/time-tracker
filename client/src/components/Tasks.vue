@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="tasks">
-            <div class="tasks__date">{{ date | englishDate }} | {{ date | fromNowDate }}</div>
+            <div class="tasks__date">{{ date | englishDate }} <span>|</span> {{ date | fromNowDate }}</div>
             <app-task v-for="task in tasks" :key="task.taskID" :task="task"/>
         </div>
     </div>
@@ -63,6 +63,9 @@ export default {
             background-color: $color-primary-darker;
             padding: 1rem 2rem;
             text-transform: capitalize;
+            & > span {
+                padding: 0 1rem;
+            }
         }
     }
 </style>

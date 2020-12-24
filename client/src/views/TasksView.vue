@@ -44,14 +44,13 @@ export default {
                 groups.push({date: key, tasks: tasksByDate[key]});
             }
 
-            // sort array by date          
-
+            // sort groups by date          
             groups.sort((group1, group2) => {
                 const date1 = moment(group1.date);
                 const date2 = moment(group2.date);
 
                 const diff = moment(date1.diff(date2, 'days'));
-                console.log(diff);
+                // console.log(diff);
                 if ( diff < 0 ){
                     return 1;
                 } else if ( diff > 0 ){
