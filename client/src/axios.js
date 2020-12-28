@@ -21,7 +21,8 @@ axiosInstance.interceptors.response.use(res => {
 }, 
     error => {
         if (error.response) {
-            store.commit('setServerFeedback', error.response);
+            // console.log(error.response);
+            store.commit('setServerFeedback', error.response.data);
         } else {
             store.commit('setServerFeedback', {msg: error.message, success: false});
         }

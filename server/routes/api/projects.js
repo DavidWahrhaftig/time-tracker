@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
     try {
         console.log("Create project");
 
-        const newProject = await Project.create({name: req.body.name});
+        const newProject = await Project.create(req.body);
 
         res.status(201).json({
             success: true,

@@ -13,8 +13,8 @@ export default {
                         label: (tooltipItem, data) => {
                             // let label = data.datasets[tooltipItem.datasetIndex].label || '';
                             let label = data.labels[tooltipItem.index] || '';
-                            console.log('tooltipItem',tooltipItem);
-                            console.log('data',data);
+                            // console.log('tooltipItem',tooltipItem);
+                            // console.log('data',data);
                             if (label) {
                                 label += ': ';
                             }
@@ -41,7 +41,7 @@ export default {
                                 durationString += seconds + ' second' + (seconds > 1 ? 's' : '');
                             }
 
-                            console.log(durationString);
+                            // console.log(durationString);
                             label += durationString;
                             return label;
                         }

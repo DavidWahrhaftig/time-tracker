@@ -2,8 +2,8 @@
     <div class="task">
         <div class="task__details">
             <input class="task__details__name" type="text" @change="updateName" :value="task.taskName"/>
-            <li class="task__details__project-name">
-                <span>{{task.projectName}}</span>
+            <li class="task__details__project-name" :style="{color: task.project.color}">
+                <span>{{task.project.name}}</span>
             </li>
         </div>
         <div class="task__time">
@@ -15,7 +15,7 @@
         </div>
         <div class="task__actions">
             <!-- <i class="task__actions-save fas fa-save"></i> -->
-            <i class="task__actions-clone fas fa-clone" @click="setNewTask({name: task.taskName, projectID: task.projectID, projectName: task.projectName})"></i>
+            <i class="task__actions-clone fas fa-clone" @click="setNewTask({name: task.taskName, project: task.project})"></i>
             <i class="task__actions-delete fas fa-trash-alt" @click="deleteTask(task.taskID)"></i>
         </div>
     </div>
@@ -95,6 +95,7 @@ export default {
             const newEnd = isEndNextDay ? this.task.end.clone().add(1, 'day') : this.task.end;
             console.log('new End', newEnd.format('YYYY-MM-DD HH:mm:ss'));
 
+            // api call to update task
             await this.updateTask({
                 taskID: this.task.taskID,
                 task: {
@@ -160,10 +161,7 @@ export default {
                 }
             });
         }
-    },
-    // created() {
-    //     this.task = this.task
-    // }
+    }
 }
 </script>
 
@@ -241,6 +239,7 @@ export default {
                 // width: 10rem !important;
                 // font-size:
                 font-family: inherit;
+                
                 margin: 0 1rem;
                 &:hover, &:focus {
                     // border: none !important;

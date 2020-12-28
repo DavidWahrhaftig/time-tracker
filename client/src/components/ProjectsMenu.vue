@@ -3,9 +3,9 @@
         <!-- <a href="#0">Widgets</a> -->
         <button class="project__button-add">
             <!-- <div v-if="selectedTask.projectName == 'No Project'"> -->
-            <i class="fas fa-plus-circle plus-icon" v-if="newTask.projectName === 'No Project'"></i>
+            <i class="fas fa-plus-circle plus-icon" v-if="newTask.project.name === 'No Project'"></i>
             <span class="project__name">
-                {{newTask.projectName === 'No Project' ? 'Project' : newTask.projectName}}
+                {{newTask.project.name === 'No Project' ? 'Project' : newTask.project.name}}
             </span>
             <!-- <div v-else>
                 {{selectedTask.projectName}}
@@ -16,30 +16,30 @@
                 class="project__item"
                 v-for="project in projects" 
                 :key="project._id"
-                @click="setSelectedProject(project.name, project._id)">
+                :style="{color: project.color}"
+                @click="setSelectedProject(project)">
                     {{ project.name}}
             </li>
-            <li class="project__item">
+            <li class="project__item project__item--new-project">
                 <input 
                     type="text" 
                     placeholder="New Project"
                     class="project__input-new-name" 
-                    @change="setNewProjectName"
-                    :value="newProjectName"/>
-                <!-- <input 
+                    v-model="newProjectName"/>
+                <input 
                     type="color"
                     class="project__input-new-color"
                     v-model="newProjectColor"/>
-                <button class="project__new-button-submit">
+                <button class="project__new-button-submit" @click="createNewProject">
                     <i class="fas fa-plus-circle plus-icon"/>Create
-                </button> -->
+                </button>
             </li>
         </ul>
     </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
     data() {
         return {
@@ -52,13 +52,25 @@ export default {
     }, 
     methods: {
         ...mapMutations(['setNewTask']),
-        setNewProjectName($event) {
+        ...mapActions(['createProject']),
+        async createNewProject() {
             // this.$emit('setNewProjectName', $event.target.value);
-            this.setNewTask({projectName: $event.target.value, projectID: null});
+
+            const newProject = {
+                name: this.newProjectName,
+                color: this.newProjectColor
+            }
+            // create new project 
+            await this.createProject(newProject); 
+            this.setNewTask({project: newProject});
+            
+            // reset project new and color 
             this.newProjectName = "";
+            this.newProjectColor = "#000000";
+            // close dropdown
         },
-        setSelectedProject(projectName, projectID) {
-            this.setNewTask({projectName, projectID});
+        setSelectedProject(project) {
+            this.setNewTask({project});
         }
     }
 }
@@ -108,6 +120,10 @@ export default {
             width:100%;
             padding: 0.5rem 1rem;
             cursor: pointer;
+
+            &--new-project {
+                // background-color: $color-logo;
+            }
             
             // & input {
             //     width: 100%;
@@ -117,16 +133,50 @@ export default {
                 // background-color: pink;
                 background-color: $color-highlight;
                 color:white;
+
+                .project__new-button-submit, .project__input-new-color {
+                    display: block;
+                }
             }
         }
 
         &__input {
             &-new-name {
                 // width: 75%;
-                // width: 100%;
+                height: 100%;
+                // width: 20rem;
+                width: 100%;
+                font-size: inherit;
+                padding: 0.5rem;
+                outline: none;
+                border: solid 1px transparent;
+                // display: none;
             }
             &-new-color {
-                width: 25%;
+                margin: 0.5rem 0;
+                width: 100%;
+                cursor: pointer;
+                outline: none;
+                display: none;
+            }
+        }
+
+        &__new-button-submit {
+            width: 100%;
+            padding: 0.5rem;
+            border: none;
+            background-color: $color-primary-dark;
+            cursor: pointer;
+            display: none;
+            & > * {
+                margin-right: 0.5rem;
+            }
+            
+            &:hover {
+                background-color: $color-primary-darker;
+            }
+            &:focus{
+                outline: none;
             }
         }
 

@@ -19,7 +19,7 @@ mongoose.connect(mongoURI,
     {   
         useFindAndModify: false,
         useNewUrlParser: true, 
-        useUnifiedTopology: true 
+        useUnifiedTopology: true
     }).then(async () => {
         console.log(`Database connected successfully ${mongoURI}`);
         const exist = await Project.findOne({name: 'No Project'});

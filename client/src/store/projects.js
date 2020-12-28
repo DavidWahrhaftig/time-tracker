@@ -102,16 +102,12 @@ const actions = {
     },
     async createProject({dispatch}, project) {
         try {
-            // commit('setIsLoading', true);
             const res = await axios.post('/projects', project);
             if (res.data.success) {
-                // commit('setTasks', res.data.tasks);
                 await dispatch('fetchProjects');
             }
-            // commit('setIsLoading', false);
         } catch(err) {
             console.log(err);
-            // commit('setIsLoading', false);
         } 
     }
 }

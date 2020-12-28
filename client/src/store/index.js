@@ -16,8 +16,10 @@ export default new Vuex.Store({
             name: "",
             start: null,
             end: null,
-            projectID: null,
-            projectName: "No Project"
+            project: {
+                _id: null,
+                name: "No Project"
+            }
         }
     },
     getters: {
@@ -45,8 +47,7 @@ export default new Vuex.Store({
                     return {
                         taskID: task._id,
                         taskName: task.name,
-                        projectID: project._id,
-                        projectName: project.name,
+                        project: project,
                         start,
                         end,
                         duration
@@ -55,8 +56,8 @@ export default new Vuex.Store({
                 // });
             });
     
-            const merged = [].concat.apply([], [].concat.apply([], tasks));    
-            return merged;
+            const mergedTasks = [].concat.apply([], [].concat.apply([], tasks));    
+            return mergedTasks;
         },
         newTask(state) {
             return state.newTask;
@@ -82,9 +83,20 @@ export default new Vuex.Store({
                 // const mins = Math.floor(durationValue.asMinutes()) - hours * 60;
                 // const sec = Math.floor(durationValue.asSeconds()) - hours * 60 * 60 - mins * 60;
                 // console.log("hh:" + hours + "mm:" + mins + "ss" + sec);
+                const sortedTasks = project.tasks.sort((t1, t2) => {
+                    if ( moment(t1.start).diff(moment(t2.start), 'seconds') < 0 ){
+                        return -1;
+                    }
+                    if ( moment(t1.start).diff(moment(t2.start), 'seconds') > 0) {
+                        return 1;
+                    }
+                    return 0;
+                });
+
                 return {
                     ...project,
-                    totalDuration
+                    totalDuration,
+                    tasks: [...sortedTasks]
                 }
             })
             state.projects = updatedProjects;
@@ -95,10 +107,12 @@ export default new Vuex.Store({
         resetNewTask(state) {
             state.newTask= {
                 name: "",
-                projectID: null,
                 start: null,
                 end: null,
-                projectName: "No Project"
+                project: {
+                    _id: null,
+                    name: "No Project"
+                }
             }
         }
     },
@@ -123,6 +137,7 @@ export default new Vuex.Store({
         },
         async createTask({dispatch}, task) {
             try {
+                console.log('create task:', task);
                 await axios.post('/tasks', task);
                 await dispatch('fetchProjects');
             } catch(err) {

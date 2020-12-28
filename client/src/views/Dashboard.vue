@@ -22,6 +22,7 @@
             <app-line-chart 
                 v-if="lineChartProject"
                 :chartData="projectForLineChart"
+                :key="lineChartProject._id"
                 class="charts-grid__line-chart-container"/>
         </div>
         <!-- Line Chart -->
@@ -69,8 +70,9 @@ export default {
 
             this.projects.forEach(project => {
                 labels.push(project.name);
-                const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-                backgroundColors.push(randomColor);
+                // const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+                // backgroundColors.push(randomColor);
+                backgroundColors.push(project.color);
                 data.push(project.totalDuration);
             });
 
@@ -117,16 +119,16 @@ export default {
         },
         projectForLineChart() {
             let labels = [];
-            let backgroundColors = '#a3e445';
+            let backgroundColor = this.lineChartProject.color;
             let data = [];
 
             // gather the appropriate data from each task of the project
             this.lineChartProject.tasks.forEach(task => {
-                const duration = moment(task.end).diff(moment(task.start), 'seconds');
+                const duration = moment(task.end).diff(task.start, 'seconds');
                 
                 labels.push(task.name);
                 data.push({
-                    t: new Date(task.start),
+                    t: moment(task.start),
                     y: duration
                 });
             });
@@ -136,7 +138,7 @@ export default {
                 datasets: [
                     {
                         label: `Tasks for ${this.lineChartProject.name}`,
-                        backgroundColor: backgroundColors,
+                        backgroundColor,
                         data: data
                     }
                 ]

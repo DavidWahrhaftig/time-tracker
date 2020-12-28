@@ -9,7 +9,7 @@ const ProjectSchema = new mongoose.Schema({
     },
     color: {
         type: String,
-        required: true,
+        // required: true,
         default: '#808080'
     },
     createdAt: {
