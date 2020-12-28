@@ -7,6 +7,11 @@ const ProjectSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    color: {
+        type: String,
+        required: true,
+        default: '#808080'
+    },
     createdAt: {
         type: Date,
         default: Date.now()

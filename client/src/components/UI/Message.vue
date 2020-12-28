@@ -26,15 +26,15 @@ export default {
         // z-index: 99;
         // display: inline-block;
         &--success {
-            color: #2b7515;
-            background: #ecffd6;
-            border: 2px solid #617c42;
+            color: $color-success;
+            background: $color-success-bg;
+            border: 2px solid $color-success;
         }
 
         &--error {
-            color: #ba3939;
-            background: #ffe0e0;
-            border: 2px solid #a33a3a;
+            color: $color-error;
+            background: $color-error-bg;
+            border: 2px solid $color-error;
         }
     }
 </style>

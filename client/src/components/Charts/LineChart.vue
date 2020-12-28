@@ -1,14 +1,14 @@
 <template>
     <div>
-        <app-pie-chart-base :chartData="chartData" :chartOptions="chartOptions"/>
+        <app-line-chart-base :chartData="chartData" :chartOptions="chartOptions"></app-line-chart-base>
     </div>
 </template>
 
 <script>
-import PieChartBase from '../ChartBases/PieChartBase';
+import LineChartBase from '../ChartBases/LineChartBase';
 export default {
     components: {
-        appPieChartBase: PieChartBase
+        appLineChartBase: LineChartBase
     },
     props: ['chartData', 'chartOptions'],
     data() {

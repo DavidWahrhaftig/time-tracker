@@ -3,8 +3,6 @@ import store from './store';
 // import router from './router';
 // import appConfig from '@/config';
 
-
-
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:3000/api'
 });

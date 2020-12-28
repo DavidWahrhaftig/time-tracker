@@ -28,11 +28,11 @@ export default new Vuex.Store({
             return state.projects.sort((p1, p2) => {
                 if ( p1.totalDuration > p2.totalDuration ){
                     return -1;
-                  }
-                  if ( p1.totalDuration < p2.totalDuration) {
+                }
+                if ( p1.totalDuration < p2.totalDuration) {
                     return 1;
-                  }
-                  return 0;
+                }
+                return 0;
             })
         },
         tasks(state) {

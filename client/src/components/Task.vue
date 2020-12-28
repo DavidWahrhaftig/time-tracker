@@ -240,6 +240,7 @@ export default {
             &-date {
                 // width: 10rem !important;
                 // font-size:
+                font-family: inherit;
                 margin: 0 1rem;
                 &:hover, &:focus {
                     // border: none !important;
