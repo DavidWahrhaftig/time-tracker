@@ -11,13 +11,7 @@ const Project = require('../../model/Project');
 router.get('/', async (req, res) => {
     try {
         console.log("Get all tasks");
-        const projects = await Project.find({}).populate({
-            path : 'tasks',
-            populate : {
-              path : 'times'
-            }
-        });
-
+        const projects = await Project.find({}).populate('tasks');
         res.status(200).json({
             success: true,
             projects,
@@ -40,7 +34,6 @@ router.get('/', async (req, res) => {
 router.get('/:projetID', async (req, res) => {
     try {
         const project = await Project.findById(req.params.projectID).populate('tasks');
-        
         res.status(200).json({
             success: true,
             project,
@@ -63,7 +56,6 @@ router.get('/:projetID', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         console.log("Create project");
-
         const newProject = await Project.create(req.body);
 
         res.status(201).json({

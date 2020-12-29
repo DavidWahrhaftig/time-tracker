@@ -1,8 +1,8 @@
 <template>
     <transition-group class="messages" name="list" tag="div">
         <app-message 
-            v-for="(message, index) in messages" 
-            :key="index"
+            v-for="message in messages" 
+            :key="message.key"
             :message="message.text"
             :success="message.success"/>
     </transition-group>
@@ -25,8 +25,7 @@ export default {
     },
     watch: {
         serverFeedback(newVal) {
-            // console.log('[new Val]', newVal);
-            this.messages.push({success: newVal.success, text: newVal.msg});
+            this.messages.push({success: newVal.success, text: newVal.msg, key: newVal.key});
 
             setTimeout(() => {
                 this.messages.shift();
@@ -39,12 +38,10 @@ export default {
 <style lang="scss">
     .messages {
         position: fixed;
-        bottom: 4rem;
-        right: 4rem;
-        // vertical-align: bottom;
+        bottom: 6rem;
+        right: 6rem;
         display: flex;
         flex-direction: column-reverse;
-        // padding: 4rem;
         & > *:not(:last-child) {
             margin-top: 1rem;
         }

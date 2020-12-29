@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-bar-chart-base :chartData="chartData" :chartOptions="chartOptions"></app-bar-chart-base>
+        <app-bar-chart-base :chartData="chartData" :chartOptions="chartOptions"/>
     </div>
 </template>
 

@@ -1,9 +1,11 @@
 <template>
     <div class="task">
         <div class="task__details">
+            <!-- Task name input -->
             <input class="task__details__name" type="text" @change="updateName" :value="task.taskName"/>
+            <!-- Project Name -->
             <li class="task__details__project-name" :style="{color: task.project.color}">
-                <span>{{task.project.name}}</span>
+                <span>{{ task.project.name }}</span>
             </li>
         </div>
         <div class="task__time">
@@ -14,8 +16,9 @@
             <input class="task__time-duration" type="text" @change="updateDuration" :value="durationFormatted"/>            
         </div>
         <div class="task__actions">
-            <!-- <i class="task__actions-save fas fa-save"></i> -->
+            <!-- clone task -->
             <i class="task__actions-clone fas fa-clone" @click="setNewTask({name: task.taskName, project: task.project})"></i>
+            <!-- delete task -->
             <i class="task__actions-delete fas fa-trash-alt" @click="deleteTask(task.taskID)"></i>
         </div>
     </div>
@@ -27,10 +30,6 @@ import moment from 'moment';
 
 export default {
     props: ['task'],
-    data() {
-        return {
-        }
-    },
     computed: {
         startTimeFormatted() {
             return this.task.start.format('hh:mm A');
@@ -43,31 +42,30 @@ export default {
         },
         durationFormatted() {
             // display in hh:mm:ss
-            const durationValue = moment.duration(this.task.duration*1000, 'milliseconds');
-            const hours = Math.floor(durationValue.asHours());
-            const mins = Math.floor(durationValue.asMinutes()) - hours * 60;
-            const secs = Math.floor(durationValue.asSeconds()) - hours * 60 * 60 - mins * 60;
-            // console.log("hh:" + hours + "mm:" + mins + "ss" + sec);
+            const totalDuration = moment.duration(this.task.duration, 'seconds');
+            const hours = Math.floor(totalDuration.asHours());
+            const mins = Math.floor(totalDuration.asMinutes()) - (hours * 60);
+            const secs = totalDuration.asSeconds() - (hours * 60 * 60) - (mins * 60);
             const durationString = `${('0' + hours % 60).slice(-2)}:${('0' + mins % 60).slice(-2)}:${('0' + secs % 60).slice(-2)}`
             return durationString;
-            // return new Date(this.task.duration * 1000).toISOString().substr(11, 8)
         },
     },
     methods: {
         ...mapMutations(['setNewTask']),
         ...mapActions(['deleteTask', 'updateTask']),
         async updateDuration($event) {
-            // console.log($event.target.value);
+
             const stringDuration = $event.target.value; // hh:mm:ss
             const splitDuration = stringDuration.split(':'); // split it at the colons
 
             // minutes are worth 60 seconds. Hours are worth 60 minutes.
-            console.log(splitDuration);
+            // convert to numbers and then convert the units to seconds
             const seconds = (+splitDuration[0]) * 60 * 60 + (+splitDuration[1]) * 60 + (+splitDuration[2]); 
-            // console.log('new duration in sec', seconds);
+
             this.task.duration = seconds;
 
             const endUpated = this.task.start.clone().add(seconds, 'seconds');
+            // api call to update the task
             await this.updateTask({
                 taskID: this.task.taskID,
                 task: {
@@ -77,6 +75,7 @@ export default {
         },
         async updateStart($event) {
             const time = $event.target.value;
+
             let AMPM = time.slice(-2);
             let timeArr = time.slice(0, -2).split(":");
             if (AMPM === "AM" && timeArr[0] === "12") {
@@ -87,13 +86,12 @@ export default {
                 timeArr[0] = (timeArr[0] % 12) + 12
             }  
             const fullDayTime = timeArr.join(":").replace(' ', '') + ':' + this.task.start.format('ss');
-            console.log(fullDayTime);
             
+            // start moment object formatted from 'YYYY-MM-DD HH:mm:ss'
             const newStart = moment(this.dateFormatted + ' ' + fullDayTime);
-            console.log('new Start', newStart.format('YYYY-MM-DD HH:mm:ss'));
             const isEndNextDay = this.task.end.diff(newStart) >= 0 ? false : true;
+            // create new end based on the previous end and whether it should be in the next day or not
             const newEnd = isEndNextDay ? this.task.end.clone().add(1, 'day') : this.task.end;
-            console.log('new End', newEnd.format('YYYY-MM-DD HH:mm:ss'));
 
             // api call to update task
             await this.updateTask({
@@ -116,18 +114,17 @@ export default {
                 timeArr[0] = (timeArr[0] % 12) + 12
             }  
             const fullDayTime = timeArr.join(":").replace(' ', '') + ':' + this.task.end.format('ss');
-            console.log(fullDayTime);
             
+            // end moment object formatted from 'YYYY-MM-DD HH:mm:ss'
             let newEnd = moment(this.task.end.format('YYYY-MM-DD') + ' ' + fullDayTime);
-            console.log('start', this.task.start.format('YYYY-MM-DD HH:mm:ss'));
-            console.log('new End', newEnd.format('YYYY-MM-DD HH:mm:ss'));
+
             const isEndBeforeStart = newEnd.diff(this.task.start) >= 0 ? false : true;
-            // let newStart = this.task.start;
             if (isEndBeforeStart) {
+                // add a day to end moment when the new end is before the start moment
                 newEnd = this.task.end.clone().add(1, 'day');
             }
-            console.log('new End', newEnd.format('YYYY-MM-DD HH:mm:ss'));
 
+            // api call to update task
             await this.updateTask({
                 taskID: this.task.taskID,
                 task: {
@@ -137,6 +134,7 @@ export default {
             });
         },
         async updateName($event) {
+            // api call to update task
             await this.updateTask({
                 taskID: this.task.taskID,
                 task: {
@@ -145,14 +143,14 @@ export default {
             });
         },
         async updateDate($event) {
-            console.log($event.target.value);
-            // create new start 
             const dateString = $event.target.value;
+            // create new start 
+
+            // retrieve the HH:mm:ss and with the new date create a new moment from both
             const newStart = moment(dateString + ' ' + this.task.start.format('HH:mm:ss'));
-            console.log('new start', newStart);
-            // create new end
+            // create new end by adding the previous duration to the new start date
             const newEnd = newStart.clone().add(this.task.duration, 'seconds');
-            console.log('new end', newEnd.format('YYYY-MM-DD HH:mm:ss'));
+            // api call to update task
             await this.updateTask({
                 taskID: this.task.taskID,
                 task: {
@@ -191,7 +189,6 @@ export default {
         &:hover {
             z-index: 99;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  
-            //  & input:not(.task__time-date) {
              & input {
                 border: solid 1px $color-primary-darker;
             } 
@@ -215,15 +212,6 @@ export default {
             }
         }
         &__time {
-            // float:right;
-            // margin: 0 1rem;
-
-            // & input{
-            //     &:hover, &:focus {
-            //         border: solid 1px $color-primary-darker;
-            //     }
-            // }
-
             & > * {
                 text-align: center;
             }
@@ -236,14 +224,9 @@ export default {
             }
 
             &-date {
-                // width: 10rem !important;
-                // font-size:
                 font-family: inherit;
                 
                 margin: 0 1rem;
-                &:hover, &:focus {
-                    // border: none !important;
-                }
             }
         }
 
@@ -256,7 +239,5 @@ export default {
                 cursor: pointer;
             }
         }    
-
-       
     }
 </style>

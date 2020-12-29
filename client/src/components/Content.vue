@@ -1,8 +1,5 @@
 <template>
     <div class="content">
-        <!-- <h1 class="u-center-text">
-            {{$route.name}}
-        </h1> -->
         <router-view/>
         <app-messages/>
     </div>

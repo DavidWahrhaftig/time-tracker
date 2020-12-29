@@ -1,30 +1,21 @@
 <template>
     <div class="message" :class="success ? 'message--success' : 'message--error'"> 
-        {{message}}
+        {{ message }}
     </div>
 </template>
 
 <script>
 export default {
     props:['message', 'success'],
-    data() {
-        return {
-            isSuccess: false
-        }
-    }
-
 }
 </script>
 
 <style lang="scss">
     .message {
-        width: 20rem;
-        font-size: 1.8rem;
-        // background-color: $color-primary-light;
+        width: 24rem;
+        font-size: 2rem;
         text-align: center;
         border-radius: 0.2rem;
-        // z-index: 99;
-        // display: inline-block;
         &--success {
             color: $color-success;
             background: $color-success-bg;

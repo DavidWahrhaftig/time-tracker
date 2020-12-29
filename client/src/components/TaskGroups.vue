@@ -7,11 +7,10 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import Tasks from '@/components/Tasks.vue';
+import Tasks from './Tasks.vue';
 
 export default {
-    name: 'TaskGroup',
+    name: 'TaskGroups',
     props: ['taskGroups'],
     components: {
         appTasks: Tasks

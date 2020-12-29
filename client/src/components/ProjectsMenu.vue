@@ -1,15 +1,10 @@
 <template>
     <div class="project">
-        <!-- <a href="#0">Widgets</a> -->
         <button class="project__button-add">
-            <!-- <div v-if="selectedTask.projectName == 'No Project'"> -->
             <i class="fas fa-plus-circle plus-icon" v-if="newTask.project.name === 'No Project'"></i>
             <span class="project__name">
-                {{newTask.project.name === 'No Project' ? 'Project' : newTask.project.name}}
+                {{ newTask.project.name === 'No Project' ? 'Project' : newTask.project.name }}
             </span>
-            <!-- <div v-else>
-                {{selectedTask.projectName}}
-            </div> -->
         </button>
         <ul class="project__dropdown">
             <li 
@@ -21,15 +16,18 @@
                     {{ project.name}}
             </li>
             <li class="project__item project__item--new-project">
+                <!-- New Name Input -->
                 <input 
                     type="text" 
                     placeholder="New Project"
                     class="project__input-new-name" 
                     v-model="newProjectName"/>
+                <!-- New Color Input -->
                 <input 
                     type="color"
                     class="project__input-new-color"
                     v-model="newProjectColor"/>
+                <!-- Submit Button -->
                 <button class="project__new-button-submit" @click="createNewProject">
                     <i class="fas fa-plus-circle plus-icon"/>Create
                 </button>
@@ -39,7 +37,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 export default {
     data() {
         return {
@@ -54,20 +52,22 @@ export default {
         ...mapMutations(['setNewTask']),
         ...mapActions(['createProject']),
         async createNewProject() {
-            // this.$emit('setNewProjectName', $event.target.value);
-
+    
             const newProject = {
                 name: this.newProjectName,
                 color: this.newProjectColor
             }
             // create new project 
-            await this.createProject(newProject); 
-            this.setNewTask({project: newProject});
+            const success = await this.createProject(newProject); 
+            if (success) {
+                this.setNewTask({project: newProject});
             
-            // reset project new and color 
-            this.newProjectName = "";
-            this.newProjectColor = "#000000";
-            // close dropdown
+                // reset project new and color 
+                this.newProjectName = "";
+                this.newProjectColor = "#000000";
+                // close dropdown
+            }
+            
         },
         setSelectedProject(project) {
             this.setNewTask({project});
@@ -121,14 +121,6 @@ export default {
             padding: 0.5rem 1rem;
             cursor: pointer;
 
-            &--new-project {
-                // background-color: $color-logo;
-            }
-            
-            // & input {
-            //     width: 100%;
-            // }
-
             &:hover {
                 // background-color: pink;
                 background-color: $color-highlight;
@@ -179,13 +171,5 @@ export default {
                 outline: none;
             }
         }
-
-        
-        // &:hover ul{
-        //     display:block;
-        //     width: 15rem;
-        // }
     }
-
-    
 </style>

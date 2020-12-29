@@ -1,5 +1,6 @@
 <template>
     <div class="new-task" :class="{'new-task--running': this.started}">
+        <!-- name input -->
         <input 
             class="new-task__input-name" 
             :disabled="this.started" 
@@ -7,23 +8,19 @@
             v-model="newTask.name" 
             placeholder="Task Name"/>
         <app-project-menu/>
-        <!-- <button class="new-task__add-project">
-            <div v-if="newTask.projectName == 'No Project'">
-                <i class="fas fa-plus-circle"></i>
-                <span>Project</span>
-            </div>
-            <div v-else>
-                {{newTask.projectName}}
-            </div>
-            
-        </button> -->
-        <div class="new-task__duration">{{formattedDuration}}</div>
-        <!-- <div class="new-task__date">{{date}}</div> -->
-
-        <button @click="startTime()" class="new-task__button new-task__button--start" v-if="!started">
+        <!-- duration display -->
+        <div class="new-task__duration">{{ formattedDuration }}</div>
+        <!-- start/stop button -->
+        <button 
+            @click="startTime()" 
+            class="new-task__button new-task__button--start" 
+            v-if="!started">
             Start
         </button>
-        <button @click="stopTime()" class="new-task__button new-task__button--stop" v-else>
+        <button 
+            @click="stopTime()" 
+            class="new-task__button new-task__button--stop" 
+            v-else>
             Stop
         </button>
     </div>
@@ -36,7 +33,6 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 
 export default {
-    // props: ['task'],
     components : {
         AppProjectMenu: ProjectMenu
     },
@@ -51,34 +47,38 @@ export default {
         ...mapGetters(['newTask']),
         formattedDuration() {
             // format duration from seconds to HH:MM:SS
-            return new Date(this.duration * 1000).toISOString().substr(11, 8);
+            return moment.utc(this.duration * 1000).format('HH:mm:ss');
         },
-
     },
     methods: {
         ...mapMutations(['resetNewTask', 'setNewTask']),
+        ...mapActions(['createTask', 'updateTask']),
         async startTime() {
+            // when task name is empty don't do anything
             if (this.newTask.name === '') return;
+
             this.started = true;
             this.newTask.start = moment();
+            // increase the duration every second
             this.intervalID = setInterval(() => {
                 this.duration += 1;
             }, 1000);
-
         }, 
         async stopTime() {
             this.started = false;
             clearInterval(this.intervalID);
             this.intervalID = null;
-            // make api call to update the task with the end date
+
             this.newTask.end = this.newTask.start.clone().add(this.duration, 'seconds')
+            // api call to create new task
             await this.createTask(this.newTask);
 
+            // reset local component state data
             this.duration= 0;
             this.intervalID= null;
+            // reset global vuex New Task state
             this.resetNewTask();
         },
-        ...mapActions(['createTask', 'updateTask'])
     }
 }
 </script>
@@ -115,26 +115,6 @@ export default {
                 border: solid 1px $color-primary-darker;
             } 
         }
-
-        // &__add-project {
-        //     cursor: pointer;
-        //     border: none;
-        //     background-color: transparent;
-        //     width: 6rem;
-        //     & > div {
-        //         display: flex;
-        //         align-items: center;
-        //         justify-content: space-around;
-        //     }
-            
-        //     &:hover span{
-        //         text-decoration: underline;
-        //     }
-        //     &:focus {
-        //         outline: none;
-        //     }
-
-        // }
 
         &__button {
             width: 10rem;

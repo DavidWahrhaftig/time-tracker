@@ -1,30 +1,35 @@
 import axios from 'axios';
 import store from './store';
-// import router from './router';
-// import appConfig from '@/config';
 
+// set base url for api 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:3000/api'
 });
 
+// request interceptor
 axiosInstance.interceptors.request.use(req => {
     return req;
 }, error => {
     console.log(error);
     return error;
 })
+
+// response interceptor
 axiosInstance.interceptors.response.use(res => {
     if (res.config.method !== 'get') {
-        store.commit('setServerFeedback', res.data);
+        const key = new Date().toISOString();
+        store.commit('setServerFeedback', {...res.data, key});
     }
     return res;
 }, 
     error => {
+        const key = new Date().toISOString();
         if (error.response) {
-            // console.log(error.response);
-            store.commit('setServerFeedback', error.response.data);
+            // when error is caught by the application server and a custom error is set
+            store.commit('setServerFeedback', {...error.response.data, key});
         } else {
-            store.commit('setServerFeedback', {msg: error.message, success: false});
+            // when error is not handled by the server (e.g. Network Error)
+            store.commit('setServerFeedback', {msg: error.message, success: false, key});
         }
         return error;
     }

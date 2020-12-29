@@ -8,8 +8,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import Task from '@/components/Task.vue';
+import Task from './Task.vue';
 import moment from 'moment'
 
 export default {
@@ -20,11 +19,9 @@ export default {
     },
     filters: {
         fromNowDate: (date) => {
-            // return moment(date).fromNow();
-            // get from-now for this date
-            const fromNow = moment( date).fromNow();
+            const fromNow = moment(date).fromNow();
 
-        // ensure the date is displayed with today and yesterday
+            // ensure the date is displayed with today and yesterday
             return moment(date).calendar( null, {
                 // when the date is closer, specify custom values
                 lastWeek: '[Last] dddd',
@@ -39,11 +36,6 @@ export default {
             });
         },
         englishDate: (date) => {
-            // const today = moment();
-            // const dateMoment = moment(date);
-            // if (today.format('YYYY-MM-DD') === dateMoment){
-            //     return "Today"
-            // }
             return moment(date).format("dddd, MMMM Do YYYY")
         }
     }

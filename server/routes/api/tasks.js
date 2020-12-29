@@ -3,7 +3,7 @@ const router = express.Router();
 
 const Project = require('../../model/Project');
 const Task = require('../../model/Task');
-const Time = require('../../model/Time');
+
 
 /**
  * @route GET api/tasks/
@@ -12,8 +12,7 @@ const Time = require('../../model/Time');
  */
 router.get('/', async (req, res) => {
     try {
-        console.log("Get all tasks");
-        // const tasks = await Task.find({}).populate('times');
+        console.log("Get tasks");
         const tasks = await Task.find({});
         res.status(200).json({
             success: true,
@@ -29,6 +28,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+
 /**
  * @route GET api/tasks/:taskID
  * @desc Return Task by id
@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:taskID', async (req, res) => {
     try {
-        // const task = await Task.findById(req.params.taskID).populate('times');
+        console.log('Get Task with ID', req.params.taskID);
         const task = await Task.findById(req.params.taskID);
         res.status(200).json({
             success: true,
@@ -52,28 +52,6 @@ router.get('/:taskID', async (req, res) => {
     }
 });
 
-/**
- * @route GET api/tasks/name/:taskName
- * @desc Return All tasks with name taskName in project with projectID
- * @access Public
- */
-router.get('/name/:taskName/project/:projectID', async (req, res) => {
-    try {
-        // const task = await Task.findOne({name: req.params.taskName, projectID: req.params.projectID}).populate('times');
-        const tasks = await Task.find({name: req.params.taskName, projectID: req.params.projectID});
-        res.status(200).json({
-            success: true,
-            tasks,
-            msg: `Get Tasks with name ${req.params.taskName} and project id ${req.params.projectID}`
-        });
-    } catch (err) {
-        console.log(err.message);
-        res.status(404).json({
-            success: false,
-            msg: err.message
-        });
-    }
-});
 
 /**
  * @route POST api/tasks/
@@ -83,16 +61,11 @@ router.get('/name/:taskName/project/:projectID', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         console.log("Create task");
-        // create new time
         // find project with the provided project Name
-        let project = await Project.findOne({name: req.body.project.name}).populate('tasks');
+        const project = await Project.findOne({name: req.body.project.name}).populate('tasks');
 
-        // create new project if project not existing yet
-        if (!project) {
-            project = await Project.create({name: req.body.project.name});
-        }
-        console.log(req.body);
         const newTask = await Task.create({...req.body, projectID: project._id});
+        // add task in project tasks list
         project.tasks.push(newTask);
         project.save();
 
@@ -143,9 +116,8 @@ router.delete('/:taskID', async(req, res) => {
     try {
         // delete task document
         const deletedTask = await Task.findByIdAndDelete(req.params.taskID);
-        // delete all time documents of this task
-        // await Time.deleteMany({_id: {$in: deletedTask.times}});
-        // delete task from project document
+
+        // delete task from project tasks list
         const project = await Project.findById(deletedTask.projectID);
         const index = project.tasks.indexOf(deletedTask._id);
         project.tasks.splice(index, 1);

@@ -2,15 +2,16 @@
     <div>
         <h1>Dashboard</h1>
         <div class="charts-grid">
+            <!-- Pie chart -->
             <app-pie-chart 
                 class="charts-grid__pie-chart-container"
-                :chartData="projectsForChart.data" 
-                :chartOptions="projectsForChart.options" />
+                :chartData="projectsData"/>
+            <!-- Bar chart -->
             <app-bar-chart 
                 class="charts-grid__bar-chart-container"
-                :chartData="projectsForChart.data" 
-                :chartOptions="projectsForChart.options" />
-            <select class="charts-grid__selcect-project-container " v-model="lineChartProject">
+                :chartData="projectsData"/>
+            <!-- select project for line chart -->
+            <select class="charts-grid__selcect-project-container " v-model="selectedProject">
                 <option :value="null">Select a project</option>
                 <option 
                     v-for="project in projects" 
@@ -19,27 +20,13 @@
                     {{ project.name }}
                 </option>
             </select>
+            <!-- Line chart -->
             <app-line-chart 
-                v-if="lineChartProject"
-                :chartData="projectForLineChart"
-                :key="lineChartProject._id"
+                v-if="selectedProject"
+                :key="selectedProject._id"
+                :chartData="dataForLineChart"
                 class="charts-grid__line-chart-container"/>
         </div>
-        <!-- Line Chart -->
-        <!-- <select class="line-chart-selector" v-model="lineChartProject">
-            <option :value="null">Select a project</option>
-            <option 
-                v-for="project in projects" 
-                :key="project._id"
-                :value="project">
-                {{ project.name }}
-            </option>
-        </select>
-        <app-line-chart 
-            v-if="lineChartProject"
-            :chartData="projectForLineChart"
-            class="line-chart-container"/> -->
-
     </div>
 </template>
 
@@ -58,86 +45,59 @@ export default {
     },
     data() {
         return {
-            lineChartProject: null
+            selectedProject: null
         }
     },
     computed: {
         ...mapGetters(['projects']),
-        projectsForChart() {
+        projectsData() {
+            // chart data and options for pie and bar charts
             let labels = [];
             let backgroundColors = [];
             let data = [];
 
+            // loop over the projects to collect label, color, data
             this.projects.forEach(project => {
                 labels.push(project.name);
-                // const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-                // backgroundColors.push(randomColor);
                 backgroundColors.push(project.color);
                 data.push(project.totalDuration);
             });
 
-            // return {
-            //     options: {
-            //         hoverBorderWidth: 10
-            //     },
-            //     data: {
-            //         // hoverBackgroundColor: "blue",
-            //         hoverBorderWidth: 10,
-            //         labels: ["Project 1", "Project 2", "Project 3"],
-            //         datasets: [
-            //             {
-            //                 label: "Projects",
-            //                 backgroundColor: ["#41B883", "#E46651", "#00D8FF"],
-            //                 data: [1, 10, 5]
-            //             }
-            //         ]
-            //     }
-            // }
-            return {
-                options: {
-                    title: {
-                        display: true,
-                        fontSize: 16,
-                        padding: 15,
-                        text: 'Custom Chart Title'
-                    },
-                    hoverBorderWidth: 10,
-                },
-                data: {
-                    // hoverBackgroundColor: "blue",
-                    hoverBorderWidth: 10,
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: "duration",
-                            backgroundColor: backgroundColors,
-                            data: data
-                        }
-                    ]
-                }
-            }
-        },
-        projectForLineChart() {
-            let labels = [];
-            let backgroundColor = this.lineChartProject.color;
-            let data = [];
-
-            // gather the appropriate data from each task of the project
-            this.lineChartProject.tasks.forEach(task => {
-                const duration = moment(task.end).diff(task.start, 'seconds');
-                
-                labels.push(task.name);
-                data.push({
-                    t: moment(task.start),
-                    y: duration
-                });
-            });
-            
             return {
                 labels: labels,
                 datasets: [
                     {
-                        label: `Tasks for ${this.lineChartProject.name}`,
+                        label: "duration",
+                        backgroundColor: backgroundColors,
+                        data: data
+                    }
+                ]
+            }
+        },
+        dataForLineChart() {
+            // chart data for the line chart
+            let labels = [];
+            let backgroundColor = this.selectedProject.color;
+            let data = [];
+
+            // gather the appropriate data from each task of the project
+            if (this.selectedProject.tasks.length > 0) {
+                this.selectedProject.tasks.forEach(task => {
+                    const taskDuration = moment(task.end).diff(task.start, 'seconds');
+                    
+                    labels.push(task.name);
+                    data.push({
+                        t: moment(task.start),
+                        y: taskDuration
+                    });
+                });
+            }            
+
+            return {
+                labels: labels,
+                datasets: [
+                    {
+                        label: `Tasks for ${this.selectedProject.name}`,
                         backgroundColor,
                         data: data
                     }
@@ -152,9 +112,10 @@ export default {
     .charts-grid {
         margin-top: 4rem;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        // grid-template-columns: 40rem 40rem;
-        grid-template-rows: 1fr;
+        // grid-template-columns: 1fr 1fr;
+        grid-template-columns: 35rem 35rem;
+        // grid-template-rows: 1fr;
+        grid-template-rows: 35rem;
         grid-column-gap: 5rem; 
         grid-row-gap: 2rem; 
         grid-template-areas: 
@@ -171,15 +132,10 @@ export default {
         }
 
         &__pie-chart-container {
-            // position: relative;
             grid-area: pie;
-            // margin: auto;
-            // width: 30rem;
-            // width: 20rem;
         }
         &__bar-chart-container {
             grid-area: bar;
-            // width: 30rem;
         }
         &__selcect-project-container {
             grid-area: selectProject;
@@ -190,7 +146,6 @@ export default {
         }
         &__line-chart-container {
             grid-area: line;
-            // width: 30rem;
         }
     }
 
@@ -211,5 +166,9 @@ export default {
         border-radius: 0.5rem;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  
           
+    }
+
+    h1 {
+        line-height: 100%;
     }
 </style>

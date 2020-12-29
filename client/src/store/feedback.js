@@ -1,6 +1,6 @@
 
 const state = {
-    serverFeedback: null
+    serverFeedback: null,
 }
 
 const getters = {
@@ -10,8 +10,8 @@ const getters = {
 }
 
 const mutations = {
-    setServerFeedback(state, res) {
-        state.serverFeedback = res
+    setServerFeedback(state, feedback) {
+        state.serverFeedback = feedback;
     }
 }
 

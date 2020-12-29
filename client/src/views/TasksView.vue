@@ -6,9 +6,9 @@
 </template>
 
 <script>
-// @ is an alias to /src
+
 import TaskGroups from '../components/TaskGroups.vue';
-import NewTask from '@/components/NewTask.vue';
+import NewTask from '../components/NewTask.vue';
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 
@@ -21,22 +21,17 @@ export default {
     computed: {
         ...mapGetters(['tasks']),
         tasksGroups() {
+            // map date to array of tasks
             let tasksByDate = {}
 
             this.tasks.forEach(task => {
                 const date = task.start.format('YYYY-MM-DD');
-                // console.log('date', date);
-                // console.log('tasksByDate', tasksByDate);
-
-                // console.log('tasksByDate', tasksByDate)
                 if (date in tasksByDate) {
                     tasksByDate[date] = [...tasksByDate[date], {...task}];
                 } else {
                     tasksByDate[date] = [{...task}];
                 }
             });
-
-            // make array of objects {date: '', tasks: []}
 
             let groups = [];
 
@@ -48,9 +43,8 @@ export default {
             groups.sort((group1, group2) => {
                 const date1 = moment(group1.date);
                 const date2 = moment(group2.date);
-
                 const diff = moment(date1.diff(date2, 'days'));
-                // console.log(diff);
+
                 if ( diff < 0 ){
                     return 1;
                 } else if ( diff > 0 ){
@@ -58,7 +52,7 @@ export default {
                 } else {
                     return 0;
                 }
-            })
+            });
 
             return groups;
         }
