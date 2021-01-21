@@ -81,17 +81,16 @@ export default {
             let data = [];
 
             // gather the appropriate data from each task of the project
-            if (this.selectedProject.tasks.length > 0) {
-                this.selectedProject.tasks.forEach(task => {
-                    const taskDuration = moment(task.end).diff(task.start, 'seconds');
-                    
-                    labels.push(task.name);
-                    data.push({
-                        t: moment(task.start),
-                        y: taskDuration
-                    });
+            this.selectedProject.tasks.forEach(task => {
+                const taskDuration = moment(task.end).diff(task.start, 'seconds');
+                
+                labels.push(task.name);
+                data.push({
+                    t: moment(task.start),
+                    y: taskDuration
                 });
-            }            
+            });
+      
 
             return {
                 labels: labels,

@@ -19,7 +19,9 @@ export default {
     },
     filters: {
         fromNowDate: (date) => {
-            const fromNow = moment(date).fromNow();
+            const fromNow = moment(date).add(1, 'day').fromNow();
+            // const fromNow = moment(date).fromNow();
+            // console.log(fromNow);
 
             // ensure the date is displayed with today and yesterday
             return moment(date).calendar( null, {
@@ -47,6 +49,8 @@ export default {
         border: solid 1px $color-primary-darker;
         border-bottom: solid 6px $color-primary-darker;
         margin-top: 4rem;
+        // border-radius: 1rem;
+        // overflow: hidden;
         & > * {
             border-top: solid 1px $color-primary-darker;
         }
@@ -54,6 +58,8 @@ export default {
         &__date {
             background-color: $color-primary-darker;
             padding: 1rem 2rem;
+            // border-radius: 1rem;
+            // overflow: none;
             text-transform: capitalize;
             & > span {
                 padding: 0 1rem;

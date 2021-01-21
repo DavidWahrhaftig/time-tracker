@@ -1,6 +1,8 @@
 <template>
     <div class="content">
-        <router-view/>
+        <keep-alive>
+            <router-view/>
+        </keep-alive>
         <app-messages/>
     </div>
 
